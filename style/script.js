@@ -122,6 +122,29 @@ if(issue.status === "open"){
 
 // button ///
 
+const allBtn = document.getElementById("all-btn");
+allBtn.classList.add("bg-[#4A00FF]", "text-white");
+allBtn.classList.remove("bg-white", "text-black");
+
+// button click//
+for(let i = 0; i < buttons.length; i++){
+  buttons[i].addEventListener("click", function(){
+
+    // button resett//
+    for(let j = 0; j < buttons.length; j++){
+      buttons[j].classList.remove("bg-[#4A00FF]", "text-white");
+      buttons[j].classList.add("bg-white", "text-black");
+    }
+
+    // clicled button active//
+    this.classList.add("bg-[#4A00FF]", "text-white");
+    this.classList.remove("bg-white", "text-black");
+  
+
+         
+  });
+}
+
 
 
 
