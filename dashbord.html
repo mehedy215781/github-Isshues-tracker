@@ -22,6 +22,9 @@
         * {
             font-family: "Geist", sans-serif;
         }
+        .container{
+            max-width:85rem;
+        }
     </style>
 
 <body>
@@ -37,7 +40,44 @@
             </div>
         </div>
         </div>
-    </header>
+    </header> <hr class="border-gray-200">
+    
+<!-- nain section -->
 
+    <main class=" pt-5 bg-[#F8FAFC]  ">
+
+        <!-- count Issue -->
+         <div class="container mx-auto">
+            <div class="buttons flex gap-2 p-5 bg-white rounded-lg mb-3">
+
+                <button id="all-btn" class="btn px-10">All</button>
+                <button id="open-btn" class="btn px-10">Open</button>
+                <button id="closed-btn" class="btn px-10">Closed</button>
+
+            </div>
+
+             <div class="p-5  flex justify-between items-center rounded-lg bg-white ">
+            <div class="flex gap-4 ">
+                <img class="" src="./assets/Aperture.png.png" alt="" srcset="">
+                <div class="">
+                    <p class="text-xl font-semibold">50 Issues</p>
+                    <p>Track and manage your project issues</p>
+                </div>
+            </div>
+
+        <div class="flex justify-between gap-3 items-center">
+            <p class=""><i class="fa-solid fa-circle text-[#00A96E]"></i><span class="">Open</span></p>
+            <p class=""><i class="fa-solid fa-circle text-[#A855F7]"></i><span class="">Closed</span></p>
+            </div>
+
+        </div>
+        <!-- ishues -->
+        <div class=" pt-5">
+            <div id="all-Issue" class="grid grid-cols-4 sm:2 gap-3">
+            </div>
+         </div>
+
+    </main>
+    <script src="./style/script.js"></script>
 </body>
 </head>
