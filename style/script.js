@@ -143,6 +143,7 @@ card.innerHTML = `
               
                     document.getElementById("modal-title").innerText = data.title || "No Title";
                     document.getElementById("modal-description").innerText = data.description || "No Description";
+                    
                     document.getElementById("modal-author").innerHTML = `${data.author || 'Unknown'} <span class="text-slate-400 font-normal ml-2">• ${new Date(data.createdAt).toLocaleDateString('en-GB')}</span>`;           
                     document.getElementById("modal-assignee").innerText = data.author || "Unassigned";
 
