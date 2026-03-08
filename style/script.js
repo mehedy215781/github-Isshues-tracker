@@ -10,13 +10,27 @@ const buttons = document.querySelectorAll(".buttons .btn");
 // Store all issues
 let allIssuesData = [];
 
+// manage spiner//
+const manageSpinner =(status) =>{
+  if(status === true){
+    document.getElementById('spinner').classList.remove("hidden");
+    document.getElementById('all-Issue').classList.add("hidden");
+  }else{
+     document.getElementById('all-Issue').classList.remove("hidden");
+    document.getElementById('spinner').classList.add("hidden");
+  }
+};
+
+
 // Fetch issues
+manageSpinner(true);
 fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues")
   .then(res => res.json())
   .then(data => {
     allIssuesData = data.data;
     displayIssue(allIssuesData); 
     countDisplay.innerText = `${allIssuesData.length} Issues`;
+    manageSpinner(false);
   });
 
 // Default All button blue
@@ -28,7 +42,10 @@ allBtn.classList.remove("bg-white", "text-black");
 for(let i = 0; i < buttons.length; i++){
   buttons[i].addEventListener("click", function(){
 
-    
+    // Spinner show
+    manageSpinner(true);
+
+    // Reset buttons
     for(let j = 0; j < buttons.length; j++){
       buttons[j].classList.remove("bg-[#4A00FF]", "text-white");
       buttons[j].classList.add("bg-white", "text-black");
@@ -46,18 +63,21 @@ for(let i = 0; i < buttons.length; i++){
       filteredIssues = allIssuesData.filter(issue => issue.status === "open");
     } else if(this.id === "closed-btn"){
       filteredIssues = allIssuesData.filter(issue => issue.status === "closed");
-    }
-
-    // Display filtered issues
-    displayIssue(filteredIssues);
-
-    // Update count
-   countDisplay.innerText = `${filteredIssues.length} Issues`;
+    };
+    // 
+    setTimeout(() => {
+      displayIssue(filteredIssues);
+      countDisplay.innerText = `${filteredIssues.length} Issues`;
+      // Spinner hide
+      manageSpinner(false);
+    }, 100);  
   });
 }
 
+
 // Display issues function
 function displayIssue(issues){
+  
   allIssue.innerHTML = ""; // 
 
   for(let k = 0; k < issues.length; k++){
@@ -104,5 +124,5 @@ function displayIssue(issues){
         </div>
       </div>
     `;
-  }
+  } 
 }
