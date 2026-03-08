@@ -91,8 +91,10 @@ if(issue.status === "open"){
         else if(label === "help wanted"){
           labelColor = "bg-yellow-200 text-yellow-700";
         } 
-        else{
-          labelColor = "bg-gray-200";
+        else if (label === "good first issue"){
+          labelColor = "bg-blue-200";
+        } else{
+              labelColor = "bg-purple-200";
         }
 
         labelsHTML += `
