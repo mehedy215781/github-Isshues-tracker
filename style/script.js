@@ -143,7 +143,7 @@ card.innerHTML = `
               
                     document.getElementById("modal-title").innerText = data.title || "No Title";
                     document.getElementById("modal-description").innerText = data.description || "No Description";
-                    document.getElementById("modal-author").innerText = data.author || "Unknown";
+                    document.getElementById("modal-author").innerHTML = `${data.author || 'Unknown'} <span class="text-slate-400 font-normal ml-2">• ${new Date(data.createdAt).toLocaleDateString('en-GB')}</span>`;           
                     document.getElementById("modal-assignee").innerText = data.author || "Unassigned";
 
                     const statusBadge = document.getElementById("modal-status-badge");
@@ -199,29 +199,21 @@ const searchInput = document.getElementById('search-input');
 searchInput.addEventListener('input', (e) => {
     const searchText = e.target.value;
 
-    // ১. যদি সার্চ বক্স খালি থাকে, তবে আগের সব ডাটা (allIssuesData) দেখিয়ে ফাংশন বন্ধ করে দাও
     if (!searchText) {
         displayIssue(allIssuesData);
         countDisplay.innerText = `${allIssuesData.length} Issues`;
         return;
     }
-
-    // ২. সার্চ শুরু হলে স্পিনার দেখাও
+    
     manageSpinner(true);
-
-    // ৩. আপনার দেওয়া API লিঙ্ক দিয়ে ডাটা ফেচ করা
+    
     fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`)
         .then(res => res.json())
         .then(result => {
             const searchData = result.data || [];
-            
-            // কার্ডগুলো আপডেট করা
+             
             displayIssue(searchData);
-            
-            // কতগুলো ডাটা পাওয়া গেল তা আপডেট করা
             countDisplay.innerText = `${searchData.length} Issues Found`;
-            
-            // কাজ শেষ, স্পিনার লুকাও
             manageSpinner(false);
         })
         .catch(err => {
