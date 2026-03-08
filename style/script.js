@@ -74,55 +74,121 @@ for(let i = 0; i < buttons.length; i++){
   });
 }
 
+function closeModal() {
+  document.getElementById('myModal').classList.add('hidden');
+}
 
-// Display issues function
-function displayIssue(issues){
-  
-  allIssue.innerHTML = ""; // 
+function displayIssue(issues) {
+    allIssue.innerHTML = "";
 
-  for(let k = 0; k < issues.length; k++){
-    const issue = issues[k];
+    issues.forEach(issue => {
+        const isOpen = issue.status === "open";
+        const borderClass = isOpen ? "border-t-4 border-[#00A96E]" : "border-t-4 border-[#A855F7]";
+        const statusImg = isOpen ? "./assets/Open-Status.png" : "./assets/closed.png";
+        
+        const priorityClasses = {
+            high: "bg-red-100 text-red-600 border border-red-200",
+            medium: "bg-yellow-100 text-yellow-600 border border-yellow-200",
+            low: "bg-gray-100 text-gray-600 border border-gray-200"
+        };
+        const priorityColor = priorityClasses[issue.priority?.toLowerCase()] || "bg-gray-100";
 
-    let borderClass = issue.status === "open" ? "border-t-4 border-[#00A96E]" : "border-t-4 border-[#A855F7]";
-    let statusImg = issue.status === "open" ? "./assets/Open-Status.png" : "./assets/closed.png";
-    let priorityColor = issue.priority === "high" ? "bg-red-300" : issue.priority === "medium" ? "bg-yellow-300" : "bg-gray-300";
+        let labelsHTML = (issue.labels || []).map(label => {
+            const labelLower = label.toLowerCase();
+            let color = "bg-gray-100 text-gray-600";
+            if (labelLower === "bug") color = "bg-red-200 text-red-500 border border-red-200";
+            if (labelLower === "help wanted") color = "bg-orange-200 text-orange-500 border border-orange-200";
+            if (labelLower === "enhancement") color = "bg-green-200 text-green-600 border border-green-200";
+            if (labelLower === "good first issue") color = "bg-blue-200 text-blue-600 border border-blue-200";
+            if (labelLower === "documentation") color = "bg-fuchsia-200 text-fuchsia-600 border border-fuchsia-200";
 
-    // Labels
-    let labelsHTML = "";
-    if(issue.labels){
-      for(let l = 0; l < issue.labels.length; l++){
-        let label = issue.labels[l];
-        let labelColor = label === "bug" ? "bg-red-200 text-red-700" :
-                         label === "enhancement" ? "bg-green-200 text-green-700" :
-                         label === "good first issue" ? "bg-blue-200 text-blue-700" :
-                         label === "documentation" ? "bg-orange-200 text-orange-700" :
-                         label === "help wanted" ? "bg-yellow-200 text-yellow-700" : "bg-gray-200";
-        labelsHTML += `<div class="badge px-3 py-1 ${labelColor} rounded-full">${label}</div>`;
-      }
-    }
+            return `<span class="px-2 py-2 rounded text-[10px] font-bold uppercase ${color}">${label}</span>`;
+        }).join(""); 
 
-    let createdDate = issue.createdAt ? new Date(issue.createdAt).toLocaleDateString() : "";
+        const createdDate = issue.createdAt ? new Date(issue.createdAt).toLocaleDateString() : "N/A";
 
-    allIssue.innerHTML += `
-      <div class="card bg-base-100 p-3 w-full shadow-sm ${borderClass}">
-        <div class="flex justify-between p-2">
-          <img class="w-6 h-6" src="${statusImg}" alt="">
-          <button class="${priorityColor} px-4 py-2 rounded-full">${issue.priority}</button>
+      // --- card element creating 
+const card = document.createElement("div");
+card.className = `card bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden cursor-pointer ${borderClass} transform hover:-translate-y-2`;
+
+card.innerHTML = `
+    <div class="p-6 md:p-8"> <div class="flex justify-between items-start mb-6">
+            <img class="w-8 h-8" src="${statusImg}" alt="status"> <span class="px-4 py-1.5 rounded-full text-sm font-bold uppercase ${priorityColor}">
+                ${issue.priority}
+            </span>
+        </div>
+        
+        <div class="mb-8">
+            <h2 class="text-2xl font-extrabold text-slate-800 mb-3 leading-tight">${issue.title}</h2>
+            <p class="text-base text-slate-600 leading-relaxed line-clamp-3">${issue.description}</p>
+            <div class="flex flex-wrap gap-3 mt-5">${labelsHTML}</div>
         </div>
 
-        <div class="card-body">
-          <h2 class="card-title">${issue.title}</h2>
-          <p>${issue.description}</p>
-          <div class="card-actions flex gap-2 mt-2">${labelsHTML}</div>
-        </div>
+        <hr class="border-slate-100 my-5">
 
-        <hr class="border-gray-300">
-
-        <div class="flex justify-between flex-col p-4 text-sm">
-          <p>#${issue.author}</p>
-          <p>${createdDate}</p>
+        <div class="flex justify-between items-center text-sm">
+            <span class="font-bold text-slate-700 text-lg">#${issue.author || 'Unknown'}</span>
+            <span class="text-slate-400 font-medium">${createdDate}</span>
         </div>
-      </div>
-    `;
-  } 
+     </div>
+   `;
+
+        card.addEventListener("click", () => {
+            if (typeof manageSpinner === "function") manageSpinner(true);
+
+            fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${issue.id}`)
+                .then(res => res.json())
+                .then(result => {
+                    const data = result.data; 
+              
+                    document.getElementById("modal-title").innerText = data.title || "No Title";
+                    document.getElementById("modal-description").innerText = data.description || "No Description";
+                    document.getElementById("modal-author").innerText = data.author || "Unknown";
+                    document.getElementById("modal-assignee").innerText = data.author || "Unassigned";
+
+                    const statusBadge = document.getElementById("modal-status-badge");
+                    statusBadge.innerText = data.status || "Opened";
+                    statusBadge.className = data.status === "open" 
+                        ? "bg-emerald-500 px-3 py-1 rounded-full font-medium text-white" 
+                        : "bg-purple-500 px-3 py-1 rounded-full font-medium text-white";
+
+                    const priorityEl = document.getElementById("modal-priority");
+                    priorityEl.innerText = data.priority || "Low";
+                    const p = data.priority?.toLowerCase();
+                    priorityEl.className = p === 'high' ? "bg-red-500 text-white px-4 py-1.5 rounded-lg font-bold text-sm uppercase" 
+                  : p === 'medium' ? "bg-yellow-500 text-white px-4 py-1.5 rounded-lg font-bold text-sm uppercase"
+                : "bg-gray-500 text-white px-4 py-1.5 rounded-lg font-bold text-sm uppercase";
+
+                    // --- modal level update dynamically///
+                    const labelContainer = document.getElementById("modal-labels-container");
+                    labelContainer.innerHTML = ""; 
+                    if (data.labels) {
+                        data.labels.forEach(label => {
+                            const labelLower = label.toLowerCase();
+                            let labelColor = "bg-blue-50 text-blue-500 border-blue-200"; 
+                            
+                            if (labelLower === "bug") labelColor = "bg-red-50 text-red-500 border-red-200";
+                            else if (labelLower === "help wanted") labelColor = "bg-orange-50 text-orange-500 border-orange-200";
+                            else if (labelLower === "enhancement") labelColor = "bg-green-50 text-green-600 border-green-200";
+
+                            const labelSpan = document.createElement("span");
+                            labelSpan.className = `border px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${labelColor}`;
+                            labelSpan.innerText = label;
+                            labelContainer.appendChild(labelSpan);
+                        });
+                    }
+
+                    if (typeof manageSpinner === "function") manageSpinner(false);
+                    const modal = document.getElementById("myModal");
+                    modal.classList.remove("hidden");
+                    modal.classList.add("flex");
+                })
+                .catch(err => {
+                    console.error(err);
+                    if (typeof manageSpinner === "function") manageSpinner(false);
+                });
+        });
+
+        allIssue.appendChild(card);
+    });
 }
