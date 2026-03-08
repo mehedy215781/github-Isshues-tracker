@@ -1,6 +1,9 @@
  const allIssue = document.getElementById('all-Issue');
 
  const buttons = document.querySelectorAll(".buttons .btn");
+
+
+let allIssuesData = [];
  
  fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues")
 .then((res) => res.json())
@@ -14,6 +17,33 @@ function displayIssue(issues){
 
     const card = document.createElement("div");
     card.className = "grid sm:grid-cols-1 gap-3";
+
+    // 
+    
+// button ///
+
+const allBtn = document.getElementById("all-btn");
+allBtn.classList.add("bg-[#4A00FF]", "text-white");
+allBtn.classList.remove("bg-white", "text-black");
+
+// button click//
+for(let i = 0; i < buttons.length; i++){
+  buttons[i].addEventListener("click", function(){
+
+    // button resett//
+    for(let j = 0; j < buttons.length; j++){
+      buttons[j].classList.remove("bg-[#4A00FF]", "text-white");
+      buttons[j].classList.add("bg-white", "text-black");
+    }
+
+    // clicled button active//
+    this.classList.add("bg-[#4A00FF]", "text-white");
+    this.classList.remove("bg-white", "text-black");
+  
+
+         
+  });
+}
 
     // * border top color change *//
      let borderClass;
@@ -120,30 +150,6 @@ if(issue.status === "open"){
 }
 
 
-// button ///
-
-const allBtn = document.getElementById("all-btn");
-allBtn.classList.add("bg-[#4A00FF]", "text-white");
-allBtn.classList.remove("bg-white", "text-black");
-
-// button click//
-for(let i = 0; i < buttons.length; i++){
-  buttons[i].addEventListener("click", function(){
-
-    // button resett//
-    for(let j = 0; j < buttons.length; j++){
-      buttons[j].classList.remove("bg-[#4A00FF]", "text-white");
-      buttons[j].classList.add("bg-white", "text-black");
-    }
-
-    // clicled button active//
-    this.classList.add("bg-[#4A00FF]", "text-white");
-    this.classList.remove("bg-white", "text-black");
-  
-
-         
-  });
-}
 
 
 
