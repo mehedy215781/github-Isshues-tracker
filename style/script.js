@@ -16,7 +16,7 @@ fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues")
   .then(data => {
     allIssuesData = data.data;
     displayIssue(allIssuesData); 
-    countDisplay.innerText = `${allIssuesData.length} Issues`; 
+    countDisplay.innerText = `${allIssuesData.length} Issues`;
   });
 
 // Default All button blue
@@ -28,7 +28,7 @@ allBtn.classList.remove("bg-white", "text-black");
 for(let i = 0; i < buttons.length; i++){
   buttons[i].addEventListener("click", function(){
 
-    // সব button reset
+    
     for(let j = 0; j < buttons.length; j++){
       buttons[j].classList.remove("bg-[#4A00FF]", "text-white");
       buttons[j].classList.add("bg-white", "text-black");
@@ -52,13 +52,13 @@ for(let i = 0; i < buttons.length; i++){
     displayIssue(filteredIssues);
 
     // Update count
-    countDisplay.innerText = `${filteredIssues.length} Issues`;
+   countDisplay.innerText = `${filteredIssues.length} Issues`;
   });
 }
 
 // Display issues function
 function displayIssue(issues){
-  allIssue.innerHTML = ""; // Clear previous cards
+  allIssue.innerHTML = ""; // 
 
   for(let k = 0; k < issues.length; k++){
     const issue = issues[k];
