@@ -94,20 +94,40 @@ function displayIssue(issues) {
         const priorityColor = priorityClasses[issue.priority?.toLowerCase()] || "bg-gray-100";
 
         let labelsHTML = (issue.labels || []).map(label => {
-            const labelLower = label.toLowerCase();
-            let color = "bg-gray-100 text-gray-600";
-            if (labelLower === "bug") color = "bg-red-200 text-red-500 border border-red-200";
-            if (labelLower === "help wanted") color = "bg-orange-200 text-orange-500 border border-orange-200";
-            if (labelLower === "enhancement") color = "bg-green-200 text-green-600 border border-green-200";
-            if (labelLower === "good first issue") color = "bg-blue-200 text-blue-600 border border-blue-200";
-            if (labelLower === "documentation") color = "bg-fuchsia-200 text-fuchsia-600 border border-fuchsia-200";
+    const labelLower = label.toLowerCase();
+    let color = "bg-gray-100 text-gray-600";
+    let iconUrl = ""; 
 
-            return `<span class="px-2 py-2 rounded text-[10px] font-bold uppercase ${color}">${label}</span>`;
-        }).join(""); 
+  //  lebel imgae set//
+  
+    if (labelLower === "bug") {
+        color = "bg-red-200 text-red-500 border border-red-200";
+        iconUrl = "./assets/bug.png"; 
+    } else if (labelLower === "help wanted") {
+        color = "bg-orange-200 text-orange-500 border border-orange-200";
+        iconUrl = "./assets/Lifebuoy.png"; 
+    } else if (labelLower === "enhancement") {
+        color = "bg-green-200 text-green-600 border border-green-200";
+        iconUrl = "https://img.icons8.com/fluency/48/star.png"; 
+    } else if (labelLower === "documentation") {
+        color = "bg-fuchsia-200 text-fuchsia-600 border border-fuchsia-200";
+        iconUrl = "https://img.icons8.com/fluency/48/document.png" 
+    } else if (labelLower === "good first issue") {
+        color = "bg-blue-200 text-blue-600 border border-blue-200";
+       iconUrl = "./assets/plant.png";
+    } 
+
+    return `
+        <span class="flex items-center gap-2 px-2 py-1.5 rounded text-[10px] font-bold uppercase ${color}">
+            ${iconUrl ? `<img src="${iconUrl}" class="w-3.5 h-3.5 object-contain" alt="">` : ""}
+            ${label}
+        </span>
+    `;
+   }).join("");
 
         const createdDate = issue.createdAt ? new Date(issue.createdAt).toLocaleDateString() : "N/A";
 
-      // --- card element creating 
+      // --- card element creat
 const card = document.createElement("div");
 card.className = `card bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden cursor-pointer ${borderClass} transform hover:-translate-y-2`;
 
@@ -143,9 +163,13 @@ card.innerHTML = `
               
                     document.getElementById("modal-title").innerText = data.title || "No Title";
                     document.getElementById("modal-description").innerText = data.description || "No Description";
-                    
-                    document.getElementById("modal-author").innerHTML = `${data.author || 'Unknown'} <span class="text-slate-400 font-normal ml-2">• ${new Date(data.createdAt).toLocaleDateString('en-GB')}</span>`;           
-                    document.getElementById("modal-assignee").innerText = data.author || "Unassigned";
+                   document.getElementById("modal-author").innerHTML = `
+                  <span class="font-bold text-slate-800">${data.author || 'Unknown'}</span> 
+                  <span class="text-slate-400 font-normal ml-2">
+                • ${data.createdAt ? new Date(data.createdAt).toLocaleDateString('en-GB') : 'N/A'}
+                </span>`;           
+
+document.getElementById("modal-assignee").innerText = data.author || "Unknown";
 
                     const statusBadge = document.getElementById("modal-status-badge");
                     statusBadge.innerText = data.status || "Opened";
@@ -171,6 +195,7 @@ card.innerHTML = `
                             if (labelLower === "bug") labelColor = "bg-red-50 text-red-500 border-red-200";
                             else if (labelLower === "help wanted") labelColor = "bg-orange-50 text-orange-500 border-orange-200";
                             else if (labelLower === "enhancement") labelColor = "bg-green-50 text-green-600 border-green-200";
+                            else if (labelLower === "good first issue") labelColor = "bg-blue-50 text-blue-600 border-blue-200";
 
                             const labelSpan = document.createElement("span");
                             labelSpan.className = `border px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider ${labelColor}`;
